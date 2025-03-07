@@ -11,11 +11,13 @@
     const progressBar = document.querySelector(".progress");
     const messageP = document.getElementById("messageID");
     const chippi = document.getElementById("chippiAudio");
+    const reverse = document.getElementById("loseAudio");
 
     let progress = 0;
     let isLooking = false;
     let isAFK = false;
     let playChippi = false;
+    let playReverse = false;
     let lastLookingTime = Date.now();
 
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -45,6 +47,9 @@
     function updateProgressBar() {
       if (isAFK) {
         playChippi = false;
+        playReverse = false;
+        reverse.pause();
+        reverse.currentTime = 0;
         chippi.pause();
         chippi.currentTime = 0;
         messageP.innerHTML =
@@ -61,6 +66,10 @@
         }
         const elapsedTime = Date.now() - lastLookingTime;
         if (elapsedTime > 2000) {
+          if (!playReverse) {
+            reverse.play();
+            playReverse = true;
+          }
           progress -= 1.5; // Slowly reverse if continuously looking
 
           if (messageP.textContent === "Loading...") {
@@ -77,6 +86,9 @@
           chippi.play();
           playChippi = true;
         }
+        playReverse = false;
+        reverse.pause();
+        reverse.currentTime = 0;
         progress += 0.3; // Fast increase
       }
 
