@@ -4,7 +4,7 @@
 //       updateRedirectRules(blockedUrls);
 //     });
 //   });
-  
+
 //   // Listen for changes in storage and update rules
 //   chrome.storage.onChanged.addListener((changes) => {
 //     if (changes.blockedUrls) {
@@ -26,18 +26,16 @@
 // //         resourceTypes: ["main_frame"]
 // //       }
 // //     }));
-  
+
 // //     chrome.declarativeNetRequest.updateDynamicRules({
 // //       removeRuleIds: Array.from({ length: 100 }, (_, i) => i + 1), // Remove old rules
 // //       addRules: rules
 // //     });
 // //   }
 
-
-
 // // chrome.runtime.onInstalled.addListener(() => {
 // //     console.log("Extension installed");
-  
+
 // //     chrome.declarativeNetRequest.updateDynamicRules({
 // //       addRules: [
 // //         {
@@ -56,14 +54,14 @@
 
 // chrome.runtime.onInstalled.addListener(() => {
 //     console.log("Extension installed");
-  
+
 //     chrome.declarativeNetRequest.updateDynamicRules({
 //       removeRuleIds: [1], // Remove old rule if it exists
 //       addRules: [
 //         {
 //           id: 1,  // Unique rule ID
 //           priority: 1,
-//           action: { 
+//           action: {
 //             type: "redirect",
 //             // Redirect to Google
 //         },
@@ -75,14 +73,14 @@
 //       ]
 //     });
 //   });
-  
+
 //   chrome.storage.onChanged.addListener((changes) => {
 //     if (changes.blockedUrls) {
 //       console.log("Updated blocked URLs:", changes.blockedUrls.newValue);
 //       updateRedirectRules(changes.blockedUrls.newValue || []);
 //     }
 //   });
-  
+
 //   function updateRedirectRules(blockedUrls) {
 //     let rules = blockedUrls.map((url, index) => ({
 //       id: index + 2,  // Unique ID (start from 2 to avoid conflicts)
@@ -96,51 +94,47 @@
 //         resourceTypes: ["main_frame"]
 //       }
 //     }));
-  
+
 //     chrome.declarativeNetRequest.updateDynamicRules({
 //       removeRuleIds: Array.from({ length: 100 }, (_, i) => i + 2), // Remove old rules
 //       addRules: rules
 //     });
 //   }
-  
-
-
 
 // Function to update redirect rules dynamically
 function updateRedirectRules(blockedUrls) {
-    let rules = blockedUrls.map((url, index) => ({
-      id: index + 1, // Unique ID for each rule
-      priority: 1,
-      action: { 
-        type: "redirect",
-        redirect: { url: chrome.runtime.getURL("camera.html") } // Redirects to local extension page
-      },
-      condition: {
-        urlFilter:`${url}*`,  // Dynamically blocks stored URLs
-        resourceTypes: ["main_frame"]
-      }
-    }));
-  
-    // Update declarativeNetRequest rules
-    chrome.declarativeNetRequest.updateDynamicRules({
-      removeRuleIds: Array.from({ length: 100 }, (_, i) => i + 1), // Clears old rules
-      addRules: rules
-    });
+  let rules = blockedUrls.map((url, index) => ({
+    id: index + 1, // Unique ID for each rule
+    priority: 1,
+    action: {
+      type: "redirect",
+      redirect: { url: chrome.runtime.getURL("camera.html") }, // Redirects to local extension page
+    },
+    condition: {
+      urlFilter: `${url}*`, // Dynamically blocks stored URLs
+      resourceTypes: ["main_frame"],
+    },
+  }));
+
+  // Update declarativeNetRequest rules
+  chrome.declarativeNetRequest.updateDynamicRules({
+    removeRuleIds: Array.from({ length: 100 }, (_, i) => i + 1), // Clears old rules
+    addRules: rules,
+  });
+}
+
+// Fetch stored URLs when the extension is installed or updated
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.storage.sync.get(["blockedUrls"], (data) => {
+    let blockedUrls = data.blockedUrls || [];
+    updateRedirectRules(blockedUrls);
+  });
+});
+
+// Listen for storage changes and update rules
+chrome.storage.onChanged.addListener((changes) => {
+  if (changes.blockedUrls) {
+    console.log("Blocked URLs updated:", changes.blockedUrls.newValue);
+    updateRedirectRules(changes.blockedUrls.newValue || []);
   }
-  
-  // Fetch stored URLs when the extension is installed or updated
-  chrome.runtime.onInstalled.addListener(() => {
-    chrome.storage.sync.get(["blockedUrls"], (data) => {
-      let blockedUrls = data.blockedUrls || [];
-      updateRedirectRules(blockedUrls);
-    });
-  });
-  
-  // Listen for storage changes and update rules
-  chrome.storage.onChanged.addListener((changes) => {
-    if (changes.blockedUrls) {
-      console.log("Blocked URLs updated:", changes.blockedUrls.newValue);
-      updateRedirectRules(changes.blockedUrls.newValue || []);
-    }
-  });
-  
+});
