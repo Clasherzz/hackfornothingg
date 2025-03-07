@@ -27,6 +27,7 @@ function Options() {
     const updatedUrls = urls.filter((_, i) => i !== index);
     setUrls(updatedUrls);
     chrome.storage.local.set({ blockedUrls: updatedUrls });
+    chrome.storage.local.remove([`rule_${index + 1}`]); // Remove the rule from storage
   };
 
   return (

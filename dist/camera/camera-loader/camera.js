@@ -68,9 +68,72 @@
         //   chrome.tabs.update({ url: "https://www.youtube.com" });
 
         //   console.log("Redirected to YouTube");
+        // chrome.declarativeNetRequest.updateDynamicRules({
+        //     removeRuleIds: [1] // Assuming YouTube block is rule ID 1
+        // }, () => {
+        //     // Redirect after rule removal
+        //     chrome.tabs.update({ url:  });
+        //     console.log("Redirected to YouTube after 10 seconds");
+        // });
+        var ruleId = 0;
+        document.addEventListener("DOMContentLoaded", () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            console.log("URL Params:", urlParams);
+            ruleId = urlParams.get("ruleId");
+            console.log("Rule ID inside domlistener:", ruleId);
+
+
         
-                chrome.tabs.update({ url: "https://www.google.com" });
-                console.log("Redirected to YouTube after 10 seconds");
+            if (!ruleId) {
+                console.error("ruleId is missing or invalid");
+            } else {
+                console.log("Camera.js Loaded - Rule ID:", ruleId);
+            }
+        
+            // Now you can use ruleId in your logic
+        }); 
+        const urlParams = new URLSearchParams(window.location.search);
+        console.log("URL Params:", urlParams);
+        ruleId = urlParams.get("ruleId");
+        console.log("Rule ID inside domlistener:", ruleId);
+
+        console.log("Rule ID:", ruleId);
+        var redirectUrl = "";
+        var lastPart = "";
+
+        chrome.storage.local.get(`rule_${ruleId}`, (result) => {
+            if (chrome.runtime.lastError) {
+                console.error("Error retrieving URL:", chrome.runtime.lastError);
+            } else {
+                redirectUrl = result[`rule_${ruleId}`]; 
+                if (redirectUrl) {
+                    lastPart = redirectUrl.substring(redirectUrl.lastIndexOf('/') + 1);
+                    console.log("Retrieved URL:", lastPart);
+                } else {
+                    console.log("No URL found for ruleId:", ruleId);
+                }
+            }
+        });
+        
+
+        ruleId = parseInt(ruleId, 10);
+        console.log("Redirect url:", redirectUrl);
+        setTimeout(() => {
+            chrome.declarativeNetRequest.updateDynamicRules({
+            removeRuleIds: [ruleId]
+            }, () => {
+            console.log("Rule removed. Redirecting to:", redirectUrl);
+        
+            // Redirect to the retrieved URL
+            // chrome.tabs.update({ url: "/" + lastPart });
+            chrome.tabs.update( { url: "https://" + lastPart.replace(/^\/+/, "") });
+        
+            // Optional: Remove the stored URL after use
+            // chrome.storage.local.remove(`rule_${ruleId}`);
+            });
+        }, 10000);
+       // chrome.tabs.update({ url: lastPart });
+               
             
         }
       }, 100);
