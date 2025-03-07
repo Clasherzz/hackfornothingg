@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Camera</title>
+    <!-- Include Teachable Machine Library -->
+    <script src="camera/tf.min.js"></script>
+    <script src="camera/teachablemachine-image.min.js"></script>
+    <script src="camera/camera-loader/camera.js" defer></script>
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+      .loading-progress {
+        margin-top: 10%;
+        width: 50rem;
+        height: 4rem;
+        background-color: black;
+        display: flex;
+        flex-direction: row;
+      }
+      .progress {
+        width: 0;
+        height: 100%;
+        background-color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="loading-progress">
+      <div class="progress"></div>
+    </div>
+  </body>
+</html>

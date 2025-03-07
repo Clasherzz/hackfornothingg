@@ -1,0 +1,25 @@
+{
+    "manifest_version": 3,
+    "name": "Evil Goofy Blocker",
+    "version": "1.0",
+    "description": "Blocks evil sites and watches you with evil intentions!",
+  
+    "host_permissions": ["<all_urls>"],
+    "action": {
+      "default_popup": "popup.html"
+    },
+    "background": {
+      "service_worker": "extension/background.js"
+    },
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["extension/content.js"]
+      }
+    ],
+     "permissions": ["storage","declarativeNetRequest", "declarativeNetRequestWithHostAccess","tabs", "activeTab", "scripting"],
+    "options_page": "settings.html"
+   
+
+}
+  
