@@ -65,7 +65,7 @@
         if (messageP.textContent !== "Loading...") {
           messageP.innerHTML = "Loading...";
         }
-        progress += 2.6; // Fast increase
+        progress += 0.3; // Fast increase
       }
 
       progress = Math.min(Math.max(progress, 0), 100);
