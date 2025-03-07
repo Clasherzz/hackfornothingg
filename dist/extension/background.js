@@ -220,12 +220,12 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
-//   chrome.runtime.onStartup.addListener(() => {
-//     chrome.storage.sync.get(["blockedUrls"], (data) => {
-//         let blockedUrls = data.blockedUrls || [];
-//         updateRedirectRules(blockedUrls);
-//     });
-// });
+chrome.runtime.onStartup.addListener(() => {
+  chrome.storage.sync.get(["blockedUrls"], (data) => {
+    let blockedUrls = data.blockedUrls || [];
+    updateRedirectRules(blockedUrls);
+  });
+});
 
 // Run when a new tab is opened
 chrome.tabs.onCreated.addListener((tab) => {

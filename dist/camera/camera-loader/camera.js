@@ -13,6 +13,7 @@
 
     let progress = 0;
     let isLooking = false;
+    let isAFK = false;
     let lastLookingTime = Date.now();
 
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -28,6 +29,7 @@
     async function predict() {
       const prediction = await model.predict(video);
       isLooking = prediction[0].probability > 0.8;
+      isAFK = prediction[1].probability > 0.7;
       console.log(
         prediction[0].probability,
         prediction[1].probability,
@@ -39,6 +41,11 @@
     }
 
     function updateProgressBar() {
+      if (isAFK) {
+        messageP.innerHTML =
+          "Yo, the camera misses you! Get back here, we aint moving";
+        return;
+      }
       if (isLooking) {
         if (progress >= 100) {
           progress = 100;
