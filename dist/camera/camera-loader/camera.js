@@ -10,10 +10,12 @@
 
     const progressBar = document.querySelector(".progress");
     const messageP = document.getElementById("messageID");
+    const chippi = document.getElementById("chippiAudio");
 
     let progress = 0;
     let isLooking = false;
     let isAFK = false;
+    let playChippi = false;
     let lastLookingTime = Date.now();
 
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -42,11 +44,17 @@
 
     function updateProgressBar() {
       if (isAFK) {
+        playChippi = false;
+        chippi.pause();
+        chippi.currentTime = 0;
         messageP.innerHTML =
           "Yo, the camera misses you! Get back here, we aint moving";
         return;
       }
       if (isLooking) {
+        playChippi = false;
+        chippi.currentTime = 0;
+        chippi.pause();
         if (progress >= 100) {
           progress = 100;
           return;
@@ -64,6 +72,10 @@
       } else {
         if (messageP.textContent !== "Loading...") {
           messageP.innerHTML = "Loading...";
+        }
+        if (!playChippi) {
+          chippi.play();
+          playChippi = true;
         }
         progress += 0.3; // Fast increase
       }
