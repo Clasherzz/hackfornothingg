@@ -1,0 +1,48 @@
+.options-container {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: black;
+    color: red;
+    padding: 20px;
+    border: 3px solid red;
+  }
+  
+  .evil-title {
+    font-size: 24px;
+    text-shadow: 2px 2px 5px red;
+  }
+  
+  .add-url-btn {
+    background: red;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .url-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .url-item {
+    display: flex;
+    justify-content: space-between;
+    background: #222;
+    padding: 8px;
+    margin: 5px 0;
+    border: 1px solid red;
+  }
+  
+  .remove-btn {
+    background: darkred;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .no-blocked-msg {
+    color: white;
+    font-style: italic;
+  }
+  

@@ -1,0 +1,22 @@
+.popup-container, .options-container {
+    text-align: center;
+    background-color: black;
+    color: red;
+    font-family: "Comic Sans MS", cursive;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  .evil-title {
+    font-size: 22px;
+    text-shadow: 2px 2px purple;
+  }
+  
+  button {
+    background-color: red;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+  }
+  
