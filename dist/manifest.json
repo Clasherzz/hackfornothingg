@@ -14,10 +14,12 @@
     "content_scripts": [
       {
         "matches": ["<all_urls>"],
-        "js": ["extension/content.js"]
+        "js": ["extension/content.js","camera/tf.min.js",
+                    "camera/teachablemachine-image.min.js"]
       }
+      
     ],
-     "permissions": ["storage","declarativeNetRequest", "declarativeNetRequestWithHostAccess","tabs", "activeTab", "scripting"],
+     "permissions": ["storage","declarativeNetRequest", "declarativeNetRequestWithHostAccess","tabs", "activeTab", "scripting","webNavigation"],
     "options_page": "settings.html"
    
 

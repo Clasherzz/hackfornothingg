@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -5,7 +7,7 @@
     <!-- Include Teachable Machine Library -->
     <script src="camera/tf.min.js"></script>
     <script src="camera/teachablemachine-image.min.js"></script>
-    
+
     <!-- <script>
       const urlParams = new URLSearchParams(window.location.search);
       const ruleId = urlParams.get("ruleId");
@@ -14,34 +16,85 @@
       window.ruleId = ruleId; 
     </script> -->
     <script src="camera/url-params.js" defer></script>
-    
+
     <script src="camera/camera-loader/camera.js" defer></script>
     <style>
       body {
         margin: 0;
         display: flex;
-        align-items: center;
+        flex-direction: column;
+        align-items: start;
         justify-content: center;
         height: 100vh;
+        background-image: url("assets/doge.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
       }
+
       .loading-progress {
-        margin-top: 10%;
-        width: 50rem;
-        height: 4rem;
-        background-color: black;
+        margin-left: 5rem;
+        width: 50vw;
+        height: 2rem;
+        border-radius: 10px;
+        background-color: #101010;
         display: flex;
         flex-direction: row;
+        overflow: hidden; /* Ensures inner element follows the border radius */
       }
       .progress {
         width: 0;
         height: 100%;
-        background-color: white;
+        background: linear-gradient(
+          to right,
+          #30ffff,
+          #147df5
+        ); /* Cyan to Blue gradient */
+        transition: width 0.5s ease-in-out;
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.8); /* White glow effect */
+      }
+
+      #messageID {
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-left: 5rem;
+      }
+      #audio-hidden {
+        display: none;
+      }
+      #incredible {
+        border-radius: 100%;
+        width: 2rem;
+        height: 2rem;
+        margin-left: -1rem;
       }
     </style>
   </head>
   <body>
     <div class="loading-progress">
       <div class="progress"></div>
+      <img id="incredible" src="assets/0.png" alt="" />
     </div>
+    <p id="messageID">Loading...</p>
+    <audio
+      id="chippiAudio"
+      src="assets/cropchippi.mp3"
+      preload="auto"
+      loop
+      class="audio-hidden"
+    ></audio>
+    <audio
+      id="loseAudio"
+      class="audio-hidden"
+      src="assets/reverse.mp3"
+      preload="auto"
+    ></audio>
+    <audio
+      id="comeBack"
+      src="assets/comeback.mp3"
+      preload="auto"
+      class="audio-hidden"
+    ></audio>
   </body>
 </html>

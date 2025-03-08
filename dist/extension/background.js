@@ -199,10 +199,39 @@ function updateRedirectRules(blockedUrls) {
         };
     });
 
+    // let rulesKids = blockedKidsUrls.map((url, index) => {
+    //     const ruleId = index + 1; // Unique ID for each rule
+    //     const redirectUrl = chrome.runtime.getURL(`cameraKids.html?ruleId=${ruleId}`);
+        
+    //     // Store the original blocked URL in chrome.storage.local
+    //     chrome.storage.local.set({ [`ruleKids_${ruleId}`]: url }, () => {
+    //         if (chrome.runtime.lastError) {
+    //            // console.error("Error storing rule in chrome.storage.local:", chrome.runtime.lastError);
+    //         }
+    //     });
+
+    //     return {
+    //         id: ruleId,
+    //         priority: 1,
+    //         action: {
+    //             type: "redirect",
+    //             redirect: { url: redirectUrl }
+    //         },
+    //         condition: {
+    //             urlFilter: `${url}*`,
+    //             resourceTypes: ["main_frame"]
+    //         }
+    //     };
+    // });
+
     if (rules.length === 0) {
        // console.error("Error: No rules generated.");
         return;
     }
+    // if (rulesKids.length === 0) {
+    //     // console.error("Error: No rules generated.");
+    //      return;
+    //  }
 
     // Update rules dynamically
     chrome.declarativeNetRequest.updateDynamicRules(
@@ -218,6 +247,20 @@ function updateRedirectRules(blockedUrls) {
             }
         }
     );
+    // Update rules dynamically
+    // chrome.declarativeNetRequest.updateDynamicRules(
+    //     {
+    //         removeRuleIds: rulesKids.map(rule => rule.id),
+    //         addRules: rulesKids
+    //     },
+    //     () => {
+    //         if (chrome.runtime.lastError) {
+    //           //  console.error("Error updating dynamic rules:", chrome.runtime.lastError);
+    //         } else {
+    //           //  console.log("Updated redirect rules:", rules);
+    //         }
+    //     }
+    // );
 }
 
 
@@ -228,13 +271,21 @@ function updateRedirectRules(blockedUrls) {
     });
   });
 
+  chrome.runtime.onInstalled.addListener(() => {
+    chrome.storage.sync.get(["blockedKidsUrls"], (data) => {
+      let blockedUrls = data.blockedKidsUrls || [];
+      updateRedirectRules(blockedUrls);
+    });
+  });
 
-//   chrome.runtime.onStartup.addListener(() => {
-//     chrome.storage.sync.get(["blockedUrls"], (data) => {
-//         let blockedUrls = data.blockedUrls || [];
-//         updateRedirectRules(blockedUrls);
-//     });
-// });
+
+
+  chrome.runtime.onStartup.addListener(() => {
+    chrome.storage.sync.get(["blockedUrls"], (data) => {
+        let blockedUrls = data.blockedUrls || [];
+        updateRedirectRules(blockedUrls);
+    });
+});
 
 
 // Run when a new tab is opened
@@ -245,6 +296,12 @@ chrome.tabs.onCreated.addListener((tab) => {
     });
 });
 
+// chrome.tabs.onCreated.addListener((tab) => {
+//     chrome.storage.sync.get(["blockedKidsUrls"], (data) => {
+//         let blockedUrls = data.blockedKidsUrls || [];
+//         updateRedirectRules(blockedUrls);
+//     });
+// });
   
   // Listen for storage changes and update rules
   chrome.storage.onChanged.addListener((changes) => {
@@ -253,7 +310,85 @@ chrome.tabs.onCreated.addListener((tab) => {
       updateRedirectRules(changes.blockedUrls.newValue || []);
     }
   });
+//   chrome.storage.onChanged.addListener((changes) => {
+//     if (changes.blockedKidsUrls) {
+//      // console.log("Blocked URLs updated:", changes.blockedUrls.newValue);
+//       updateRedirectRules(changes.blockedKidsUrls.newValue || []);
+//     }
+//   });
+
+//   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+//     if (message.action === "doSomething") {
+//         (async () => {
+//             try {
+//                 const result = await someAsyncFunction();
+//                 sendResponse({ success: true, data: result });
+//             } catch (error) {
+//                 sendResponse({ success: false, error: error.message });
+//             }
+//         })();
+
+//         return true; // Keep the message channel open for the async response
+//     }
+//     return true;
+// });
+
+
+// chrome.webNavigation.onCompleted.addListener(async (details) => {
+//     console.log("Navigation Completed:", details.url);
+        
+//         if (details.url.includes("https://www.reddit.com/")) {
+//             chrome.scripting.executeScript({
+//                 target: { tabId: details.tabId },
+//                 files: ["../camera/camera-kid/camera.js"]
+//             });
+//         }
+   
+// }, { url: [{ schemes: ["http", "https"] }] });
  
+// chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+//     if (changeInfo.status === "complete" && tab.url.includes("reddit.com")) {
+//         try {
+//             chrome.local.storage()
+//             await chrome.scripting.executeScript({
+//                 target: { tabId },
+//                 files: ["camera/camera-kid/camera.js"]
+//             });
+//          //   console.log("Script injected successfully on Reddit!");
+//         } catch (error) {
+//            // console.error("Error injecting script:", error);
+//         }
+//     }
+// });
+
+
+
+
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+    if (changeInfo.status === "complete" && tab.url) {
+        try {
+            // Get the list from local storage (assuming it's stored as an array of strings)
+            chrome.storage.local.get("alertUrls", async (result) => {
+                const list = result.alertUrls || [];  // Get the list or an empty array if not found
+
+                // Check if any item from the list exists in the URL
+                const matchFound = list.some(item => tab.url.includes(item));
+                
+                if (matchFound) {
+                   // console.log("URL matches an item in the list.");
+                    
+                    // Inject the script if there's a match
+                    await chrome.scripting.executeScript({
+                        target: { tabId },
+                        files: ["camera/camera-kid/camera.js"]
+                    });
+                }
+            });
+        } catch (error) {
+          //  console.error("Error injecting script:", error);
+        }
+    }
+});
 
 
 
