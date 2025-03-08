@@ -12,6 +12,7 @@
     const messageP = document.getElementById("messageID");
     const chippi = document.getElementById("chippiAudio");
     const reverse = document.getElementById("loseAudio");
+    const incredibleFace = document.getElementById("incredible");
 
     let progress = 0;
     let isLooking = false;
@@ -94,6 +95,19 @@
 
       progress = Math.min(Math.max(progress, 0), 100);
       progressBar.style.width = `${progress}%`;
+      if (progress > 75) {
+        incredibleFace.src = "assets/75.png";
+      } else if (progress > 50) {
+        incredibleFace.src = "assets/50.png";
+      } else if (progress > 25) {
+        incredibleFace.src = "assets/25.png";
+      } else if (progress > 3) {
+        incredibleFace.src = "assets/0.png";
+        incredibleFace.style.display = "block";
+      } else {
+        incredibleFace.src = "";
+        incredibleFace.style.display = "none";
+      }
     }
 
     var ruleId = 0;
