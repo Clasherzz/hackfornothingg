@@ -13,12 +13,14 @@
     const chippi = document.getElementById("chippiAudio");
     const reverse = document.getElementById("loseAudio");
     const incredibleFace = document.getElementById("incredible");
+    const comeBackAud = document.getElementById("comeBack");
 
     let progress = 0;
     let isLooking = false;
     let isAFK = false;
     let playChippi = false;
     let playReverse = false;
+    let playMeow = false;
     let lastLookingTime = Date.now();
 
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -47,6 +49,10 @@
 
     function updateProgressBar() {
       if (isAFK) {
+        if (!playMeow) {
+          comeBackAud.play();
+          playMeow = true;
+        }
         playChippi = false;
         playReverse = false;
         reverse.pause();
@@ -58,6 +64,9 @@
         return;
       }
       if (isLooking) {
+        playMeow = false;
+        comeBackAud.pause();
+        comeBackAud.currentTime = 0;
         playChippi = false;
         chippi.currentTime = 0;
         chippi.pause();
@@ -87,6 +96,9 @@
           chippi.play();
           playChippi = true;
         }
+        comeBackAud.pause();
+        comeBackAud.currentTime = 0;
+        playMeow = false;
         playReverse = false;
         reverse.pause();
         reverse.currentTime = 0;
